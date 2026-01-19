@@ -1,4 +1,8 @@
 local s, id = GetID()
+local SETS = {
+    Argostars = 0x1ba
+}
+
 function s.initial_effect(c)
     -- Materiais: 2 LIGHT Warrior
     c:EnableReviveLimit()
@@ -50,8 +54,11 @@ end
 
 -- Filtros de Invocação
 function s.contactfilter(c, tp)
-    return (c:IsSetCard(0x1ba) or (c:IsType(TYPE_CONTINUOUS) and c:IsType(TYPE_TRAPMONSTER))) 
-        and c:IsAbleToRemoveAsCost() and (c:IsLocation(LOCATION_HAND) or c:IsFaceup())
+    return c:IsAbleToRemoveAsCost() and (c:IsLocation(LOCATION_HAND) or c:IsFaceup())
+        and (
+            (c:IsSetCard(SETS.Argostars) and c:IsType(TYPE_MONSTER)) or
+            (c:IsContinuousTrap() and c:IsTrapMonster())
+        )
 end
 
 function s.contactcon(e, c)
@@ -83,7 +90,7 @@ end
 
 -- Lógica de Busca
 function s.thfilter(c)
-    return c:IsSetCard(0x1ba) and c:IsMonster() and c:IsAbleToHand()
+    return c:IsSetCard(SETS.Argostars) and c:IsMonster() and c:IsAbleToHand()
 end
 
 function s.thtg(e, tp, eg, ep, ev, re, r, rp, chk)
@@ -117,12 +124,13 @@ function s.stbyop(e, tp, eg, ep, ev, re, r, rp)
     local c = e:GetHandler()
     if c:IsRelateToEffect(e) and Duel.SendtoDeck(c, nil, SEQ_DECKTOP, REASON_EFFECT) > 0 then
         Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_SPSUMMON)
-        local tc = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.trapfilter), tp, LOCATION_GRAVE + LOCATION_REMOVED, 0, 1, 1, nil):GetFirst()
-        if tc then
+        local sc = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.trapfilter), tp, LOCATION_GRAVE + LOCATION_REMOVED, 0, 1, 1, nil):GetFirst()
+        if sc then
             -- Configura a Trap como Monstro
-            tc:AddMonsterAttribute(TYPE_EFFECT + TYPE_TRAP + TYPE_MONSTER, ATTRIBUTE_LIGHT, RACE_WARRIOR, 4, 0, 0)
-            if Duel.SpecialSummon(tc, SUMMON_TYPE_SPECIAL, tp, tp, true, false, POS_FACEUP) > 0 then
+            sc:AddMonsterAttribute(TYPE_EFFECT + TYPE_TRAP + TYPE_MONSTER)
+            if Duel.SpecialSummon(sc, SUMMON_TYPE_SPECIAL, tp, tp, true, false, POS_FACEUP) > 0 then
                 -- Concede o efeito de Book of Moon Duplo
+
                 local e1 = Effect.CreateEffect(c)
                 e1:SetDescription(aux.Stringid(id, 2))
                 e1:SetCategory(CATEGORY_POSITION)
@@ -134,7 +142,47 @@ function s.stbyop(e, tp, eg, ep, ev, re, r, rp)
                 e1:SetTarget(s.postg)
                 e1:SetOperation(s.posop)
                 e1:SetReset(RESET_EVENT + RESETS_STANDARD)
-                tc:RegisterEffect(e1, true)
+                sc:RegisterEffect(e1, true)
+
+                local e2=Effect.CreateEffect(e:GetHandler())
+                e2:SetType(EFFECT_TYPE_SINGLE)
+                e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+                e2:SetReset(RESET_EVENT + RESETS_STANDARD + RESET_LEAVE)
+                e2:SetCode(EFFECT_SET_BASE_DEFENSE)
+                e2:SetValue(0)
+                sc:RegisterEffect(e2,true)
+
+                local e3=Effect.CreateEffect(e:GetHandler())
+                e3:SetType(EFFECT_TYPE_SINGLE)
+                e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+                e3:SetReset(RESET_EVENT + RESETS_STANDARD + RESET_LEAVE)
+                e3:SetCode(EFFECT_SET_BASE_ATTACK)
+                e3:SetValue(0)
+                sc:RegisterEffect(e3,true)
+
+                local e4=Effect.CreateEffect(e:GetHandler())
+                e4:SetType(EFFECT_TYPE_SINGLE)
+                e4:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+                e4:SetReset(RESET_EVENT + RESETS_STANDARD + RESET_LEAVE)
+                e4:SetCode(EFFECT_CHANGE_ATTRIBUTE)
+                e4:SetValue(ATTRIBUTE_LIGHT)
+                sc:RegisterEffect(e4,true)
+
+                local e5=Effect.CreateEffect(e:GetHandler())
+                e5:SetType(EFFECT_TYPE_SINGLE)
+                e5:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+                e5:SetReset(RESET_EVENT + RESETS_STANDARD + RESET_LEAVE)
+                e5:SetCode(EFFECT_CHANGE_RACE)
+                e5:SetValue(RACE_WARRIOR)
+                sc:RegisterEffect(e5,true)
+
+                local e6=Effect.CreateEffect(e:GetHandler())
+                e6:SetType(EFFECT_TYPE_SINGLE)
+                e6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+                e6:SetReset(RESET_EVENT + RESETS_STANDARD + RESET_LEAVE)
+                e6:SetCode(EFFECT_CHANGE_LEVEL)
+                e6:SetValue(4)
+                sc:RegisterEffect(e6,true)
             end
         end
     end
