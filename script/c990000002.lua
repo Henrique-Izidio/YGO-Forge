@@ -103,7 +103,7 @@ function s.gyConFilter(c)
 end
 
 function s.gyCon(e,tp,eg,ep,ev,re,r,rp)
-  return re ~= tp and eg:IsExists(s.gyConFilter,1,nil)
+  return rp ~= tp and eg:IsExists(s.gyConFilter,1,nil)
 end
 
 function s.gyTg(e,tp,eg,ep,ev,re,r,rp,chk)
