@@ -98,7 +98,7 @@ function s.tdfilter(c)
 				c:IsType(TYPE_CONTINUOUS)
 				and c:IsType(TYPE_TRAP)
 			)
-		)
+		) and not c:IsCode(id)
 end
 
 function s.tdtg(e, tp, eg, ep, ev, re, r, rp, chk)
