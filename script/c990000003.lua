@@ -68,15 +68,14 @@ function s.sumOp(e, tp, eg, ep, ev, re, r, rp)
             sc:CompleteProcedure()
             
 
-            if Duel.SelectYesNo(tp, aux.Stringid(id,1)) then
-                
-            end
-            -- Tenta anexar a Magia de Jogo Rápido da mão ou cemitério
-            Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_XMATERIAL)
-            local mat = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.matfilter), tp, LOCATION_HAND+LOCATION_GRAVE, 0, 0, 1, nil)
-            if #mat > 0 then
-                Duel.BreakEffect()
-                Duel.Overlay(sc, mat)
+            if Duel.SelectYesNo(tp, aux.Stringid(id, 0)) then
+                -- Tenta anexar a Magia de Jogo Rápido da mão ou cemitério
+                Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_XMATERIAL)
+                local mat = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.matfilter), tp, LOCATION_HAND+LOCATION_GRAVE, 0, 0, 1, nil)
+                if #mat > 0 then
+                    Duel.BreakEffect()
+                    Duel.Overlay(sc, mat)
+                end
             end
         end
     end
