@@ -11,7 +11,7 @@ function s.initial_effect(c)
     e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
     e1:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_TRIGGER_O) -- Trigger de quando esta carta entra
     e1:SetProperty(EFFECT_FLAG_DELAY)
-    e1:SetCode(EVENT_SPSUMMON_SUCCESS) -- Funciona na Normal
+    e1:SetCode(EVENT_SPSUMMON_SUCCESS)
     e1:SetRange(LOCATION_MZONE)
     e1:SetCountLimit(1, {id, 1})
     e1:SetTarget(s.sumTg)
@@ -72,7 +72,7 @@ function s.sumOp(e, tp, eg, ep, ev, re, r, rp)
             
             -- Tenta anexar a Magia de Jogo Rápido da mão ou cemitério
             Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_XMATERIAL)
-            local mat = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.matfilter), tp, LOCATION_HAND+LOCATION_GRAVE, 0, 0, 1, nil)
+            local mat = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.matfilter), tp, LOCATION_HAND+LOCATION_GRAVE, 1, 1, 1, nil)
             if #mat > 0 then
                 Duel.BreakEffect()
                 Duel.Overlay(sc, mat)
