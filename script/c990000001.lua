@@ -4,9 +4,12 @@ local SETS = {
 }
 
 function s.initial_effect(c)
-    -- Materiais: 2 LIGHT Warrior
+    -- Materiais: 2 LIGHT Warrior + Alternative Summon
     c:EnableReviveLimit()
     Fusion.AddProcMixN(c, true, true, aux.FilterBoolFunctionEx(Card.IsAttribute, ATTRIBUTE_LIGHT), 2)
+
+    -- Can only be Special Summoned once per turn
+    c:SetSPSummonOnce(id)
 
     -- Invocação por Contato (Special Summon sem Poly)
     local e1 = Effect.CreateEffect(c)
