@@ -49,15 +49,12 @@ function s.sumTg(e, tp, eg, ep, ev, re, r, rp, chk)
     local c = e:GetHandler()
     if chk == 0 then
         return Duel.IsExistingMatchingCard(s.spfilter, tp, LOCATION_EXTRA, 0, 1, nil, e, tp, c)
-        -- Nota: A verificação da magia na mão/GY pode ser opcional ou obrigatória. 
-        -- Aqui assumimos que você quer invocar mesmo que não tenha a magia no momento (opcional).
     end
     Duel.SetOperationInfo(0, CATEGORY_SPECIAL_SUMMON, nil, 1, tp, LOCATION_EXTRA)
 end
 
 function s.sumOp(e, tp, eg, ep, ev, re, r, rp)
     local c = e:GetHandler()
-    -- Checagens de validade do material em campo
     if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1 - tp) or c:IsImmuneToEffect(e) then return end
     
     Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_SPSUMMON)
@@ -72,7 +69,7 @@ function s.sumOp(e, tp, eg, ep, ev, re, r, rp)
             
             -- Tenta anexar a Magia de Jogo Rápido da mão ou cemitério
             Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_XMATERIAL)
-            local mat = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.matfilter), tp, LOCATION_HAND+LOCATION_GRAVE, 1, 1, 1, nil)
+            local mat = Duel.SelectMatchingCard(tp, aux.NecroValleyFilter(s.matfilter), tp, LOCATION_HAND+LOCATION_GRAVE, 0, 0, 1, nil)
             if #mat > 0 then
                 Duel.BreakEffect()
                 Duel.Overlay(sc, mat)
